@@ -1,0 +1,7 @@
+vendor/
+build/
+__pycache__/
+*.egg-info
+*.pyz
+*.db
+*.db-*
