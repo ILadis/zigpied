@@ -1,4 +1,5 @@
 
+import sys
 import logging
 import asyncio
 
@@ -6,16 +7,16 @@ import zigpied
 from zigpied.handlers import permit_join, list_devices, query_metrics, stop
 
 def run():
-    logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
 
 async def main():
-    config = {
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='%(asctime)s [%(levelname)9s] --- %(name)s: %(message)s')
+
+    controller = await zigpied.Controller({
         'database_path': 'zigbee.db',
         'device': { 'path': '/dev/ttyUSB0' },
-    }
+    })
 
-    controller = await zigpied.Controller(config)
     repository = zigpied.Repository('metrics.db')
 
     observer = zigpied.Observer(repository)
@@ -25,8 +26,8 @@ async def main():
 
     server = zigpied.Server()
     server.register('POST', '/permit-join', permit_join, controller)
-    server.register('GET', '/devices', list_devices, controller)
-    server.register('GET', '/metrics', query_metrics, repository)
+    server.register('GET',  '/devices', list_devices, controller)
+    server.register('GET',  '/metrics', query_metrics, repository)
     server.register('POST', '/stop', stop, future)
 
     await server.start(host='127.0.0.1', port=8089)

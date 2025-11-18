@@ -46,7 +46,7 @@ class Repository:
         cursor.execute(statement, parameters)
         self.db.commit()
 
-    def query(self, address='', metric='', after=False, before=False):
+    def query(self, address=None, metric=None, after=None, before=None):
         parameters = (
             address, 0 if not address else 1,
             metric,  0 if not metric  else 1,
@@ -56,7 +56,8 @@ class Repository:
         statement = '''
             SELECT "address", "metric", "value", "timestamp" FROM "log"
             WHERE (address=? OR 0=?) AND (metric=? OR 0=?)
-            AND timestamp>=? AND timestamp<=?'''
+            AND timestamp>=? AND timestamp<=?
+            ORDER BY timestamp DESC'''
 
         cursor = self.db.cursor()
         return cursor.execute(statement, parameters)
