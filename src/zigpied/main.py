@@ -29,7 +29,7 @@ async def main():
     server.register('GET', '/metrics', query_metrics, repository)
     server.register('POST', '/stop', stop, future)
 
-    await server.start()
+    await server.start(host='127.0.0.1', port=8089)
 
     try:
         await future
