@@ -1,5 +1,6 @@
 vendor/
 build/
+flash/
 __pycache__/
 *.egg-info
 *.pyz
