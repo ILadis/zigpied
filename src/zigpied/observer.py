@@ -32,13 +32,14 @@ class Observer:
     def add_device(self, device):
         parse_packet = device._parse_packet_command
         hande_command = self.hande_command
+        logger = self.logger
 
         def parse_command(self, packet, endpoint, cluster):
             command = parse_packet(packet, endpoint, cluster)
             try:
                 hande_command(device, endpoint, cluster, command)
             except Exception as exception:
-                self.logger.error(exception, exc_info=True)
+                logger.error(exception, exc_info=True)
             return command
 
         self.logger.info('Device (%s) is being observed', str(device.ieee))
@@ -47,6 +48,8 @@ class Observer:
 
     def hande_command(self, device, endpoint, cluster, command):
         if cluster is None:
+            return False
+        if not hasattr(command, 'attribute_reports'):
             return False
 
         for report in command.attribute_reports:
