@@ -50,6 +50,6 @@ async def query_metrics(request, response, repository):
     response.content_type = 'application/json'
     response.text = dumps(metrics)
 
-async def stop(request, response, future):
-    future.cancel()
+async def stop(request, response, event):
+    event.set()
     response.set_status(200)

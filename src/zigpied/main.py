@@ -22,18 +22,18 @@ async def main():
     observer = zigpied.Observer(repository)
     observer.observe(controller)
 
-    future = asyncio.get_running_loop().create_future()
+    event = asyncio.Event()
 
     server = zigpied.Server()
     server.register('POST', '/permit-join', permit_join, controller)
     server.register('GET',  '/devices', list_devices, controller)
     server.register('GET',  '/metrics', query_metrics, repository)
-    server.register('POST', '/stop', stop, future)
+    server.register('POST', '/stop', stop, event)
 
     await server.start(host='127.0.0.1', port=8089)
 
     try:
-        await future
+        await event.wait()
     except:
         pass
 
