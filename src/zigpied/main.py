@@ -17,7 +17,7 @@ async def main():
     controller = await zigpied.Controller({
         'database_path': 'zigbee.db',
         'device': { 'path': '/dev/ttyUSB0' },
-    }) if os.path.isfile('/dev/ttyUSB0') else zigpied.NoopController()
+    }) if os.path.exists('/dev/ttyUSB0') else zigpied.NoopController()
 
     repository = zigpied.Repository('metrics.db')
 
