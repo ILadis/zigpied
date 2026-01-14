@@ -31,13 +31,13 @@ class Observer:
 
     def add_device(self, device):
         parse_packet = device._parse_packet_command
-        hande_command = self.hande_command
+        handle_command = self.handle_command
         logger = self.logger
 
         def parse_command(self, packet, endpoint, cluster):
             command = parse_packet(packet, endpoint, cluster)
             try:
-                hande_command(device, endpoint, cluster, command)
+                handle_command(device, endpoint, cluster, command)
             except Exception as exception:
                 logger.error(exception, exc_info=True)
             return command
@@ -46,7 +46,7 @@ class Observer:
 
         device._parse_packet_command = types.MethodType(parse_command, device)
 
-    def hande_command(self, device, endpoint, cluster, command):
+    def handle_command(self, device, endpoint, cluster, command):
         if cluster is None:
             return False
         if not hasattr(command, 'attribute_reports'):
