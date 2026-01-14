@@ -4,6 +4,8 @@ import logging
 import asyncio
 
 import zigpied
+
+from zigpied.devices import Sinocare
 from zigpied.handlers import permit_join, list_devices, query_metrics, stop
 
 def run():
@@ -24,6 +26,11 @@ async def main():
 
     event = asyncio.Event()
 
+    scanner = zigpied.Scanner()
+
+    scale = Sinocare('cf:e5:25:24:19:1b', repository)
+    scanner.register(scale.handler)
+
     server = zigpied.Server()
     server.register('POST', '/permit-join', permit_join, controller)
     server.register('GET',  '/devices', list_devices, controller)
@@ -31,12 +38,14 @@ async def main():
     server.register('POST', '/stop', stop, event)
 
     await server.start(host='127.0.0.1', port=8089)
+    await scanner.start()
 
     try:
         await event.wait()
     except:
         pass
 
+    await scanner.stop()
     await server.stop()
     await controller.shutdown()
 

@@ -26,6 +26,9 @@ class Server:
         self.app.add_routes([route])
 
     async def start(self, host='localhost', port=8080):
+        if self.runner is not None:
+            return False
+
         runner = web.AppRunner(self.app)
         await runner.setup()
 
@@ -33,10 +36,13 @@ class Server:
         await site.start()
 
         self.runner = runner
+        return True
 
     async def stop(self):
-        if not self.runner:
+        if self.runner is None:
             return False
 
         await self.runner.cleanup()
+
+        self.runner = None
         return True

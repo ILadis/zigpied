@@ -26,6 +26,10 @@ def Observer(repository):
     from .observer import Observer
     return Observer(repository)
 
+def Scanner():
+    from .scanner import Scanner
+    return Scanner()
+
 def Server():
     from .server import Server
     return Server()
