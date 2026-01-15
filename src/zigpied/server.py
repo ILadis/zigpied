@@ -10,14 +10,15 @@ class Server:
         self.app = web.Application()
         self.runner = None
 
-    def register(self, method, path, handler, *context):
+    def register(self, method, path, handler, *context, stream=False):
         async def exchange(request):
-            response = web.Response()
+            response = web.StreamResponse() if stream else web.Response()
 
             try:
                 await handler(request, response, *context)
             except Exception as exception:
-                response.set_status(500)
+                if not stream or not response.prepared:
+                    response.set_status(500)
                 self.logger.error(exception, exc_info=True)
 
             return response

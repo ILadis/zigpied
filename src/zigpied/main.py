@@ -34,7 +34,7 @@ async def main():
     server = zigpied.Server()
     server.register('POST', '/permit-join', permit_join, controller)
     server.register('GET',  '/devices', list_devices, controller)
-    server.register('GET',  '/metrics', query_metrics, repository)
+    server.register('GET',  '/metrics', query_metrics, repository, stream=True)
     server.register('POST', '/stop', stop, event)
 
     await server.start(host='127.0.0.1', port=8089)

@@ -35,20 +35,32 @@ async def query_metrics(request, response, repository):
         if before: before = datetime.strptime(before, '%Y-%m-%dT%H:%M:%S').timestamp()
     except:
         response.set_status(400)
+        response.prepare(request)
+        response.write_eof()
         return
 
-    metrics = []
+    response.set_status(200)
+    response.content_type = 'application/json'
+    response.enable_chunked_encoding()
+
+    await response.prepare(request)
+    await response.write(b'[')
+
+    separator = iter([b'', b','])
+
     for log in repository.query(address, metric, after, before):
-        metrics.append({
+        metric = dumps({
             'address': str(log.address),
             'metric':  str(log.metric),
             'value':   float(log.value),
             'timestamp': datetime.fromtimestamp(log.timestamp).strftime('%Y-%m-%dT%H:%M:%S'),
         })
 
-    response.set_status(200)
-    response.content_type = 'application/json'
-    response.text = dumps(metrics)
+        await response.write(next(separator, b','))
+        await response.write(metric.encode('utf-8'))
+
+    await response.write(b']')
+    await response.write_eof()
 
 async def stop(request, response, event):
     event.set()
