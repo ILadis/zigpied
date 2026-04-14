@@ -35,8 +35,8 @@ async def query_metrics(request, response, repository):
         if before: before = datetime.strptime(before, '%Y-%m-%dT%H:%M:%S').timestamp()
     except:
         response.set_status(400)
-        response.prepare(request)
-        response.write_eof()
+        await response.prepare(request)
+        await response.write_eof()
         return
 
     response.set_status(200)

@@ -24,7 +24,7 @@ def build(args):
     pip = get_pip()
 
     flags = ['--prefix', './vendor', '--disable-pip-version-check']
-    pkgs  = ['zigpy==0.90.0', 'zigpy-znp==0.14.2', 'bleak==2.1.1', './src'] if args.clean else ['./src']
+    pkgs  = ['zigpy==1.2.2', 'zigpy-znp==0.14.3', 'bleak==3.0.1', './src'] if args.clean else ['./src']
 
     pip(['install'] + pkgs + flags)
 
