@@ -32,7 +32,7 @@ class Repository:
         db.row_factory = named_rows
 
         return cls(db)
-    
+
     def append(self, address, metric, value, timestamp):
         parameters = (address, metric, value, timestamp)
         statement = '''
